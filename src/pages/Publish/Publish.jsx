@@ -5,6 +5,10 @@ const { backendUrlBase, siteName } = require('../../config');
 
 const Publish = (props) => {
     const [title, setTitle] = useState();
+    const [sentence, setSentence] = useState();
+    const [code, setCode] = useState();
+    const [commentary, setCommentary] = useState();
+    const [editorCommentary, setEditorCommentary] = useState();
 
     useEffect(() => {
         document.title = `Publish | ${siteName}`
@@ -34,10 +38,10 @@ const Publish = (props) => {
                             }}
                         >
                             <Input type="text" label="Title" placeholder="Title" minLength="5" onChange={(e) => setTitle(e.target.value)} />
-                            <Textarea label="Sentence or Phrase" placeholder="Sentence or Phrase" rows={6} />
-                            <Textarea label="Diagram Code" placeholder="Sentence or Phrase" rows={10} />
-                            <Textarea label="Author's Commentary" placeholder="Author's Commentary" rows={6} />
-                            <Textarea label="Editor's Commentary" placeholder="Editor's Commentary" rows={6} />
+                            <Textarea label="Sentence or Phrase" placeholder="Sentence or Phrase" rows={6} onChange={(e) => setSentence(e.target.value)} />
+                            <Textarea label="Diagram Code" placeholder="Diagram Code" rows={10} onChange={(e) => setCode(e.target.value)} />
+                            <Textarea label="Author's Commentary" placeholder="Author's Commentary" rows={6} onChange={(e) => setCommentary(e.target.value)} />
+                            <Textarea label="Editor's Commentary" placeholder="Editor's Commentary" rows={6} rows={6} onChange={(e) => setEditorCommentary(e.target.value)} />
                             <Button variant='is-primary' type='submit'>Submit</Button>
                         </form>  
                     </div>
