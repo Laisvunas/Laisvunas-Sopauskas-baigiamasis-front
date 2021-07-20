@@ -37,9 +37,9 @@ const Publish = (props) => {
                                 publishDiagram();
                             }}
                         >
-                            <Input type="text" label="Title" placeholder="Title" minLength="5" onChange={(e) => setTitle(e.target.value)} />
-                            <Textarea label="Sentence or Phrase" placeholder="Sentence or Phrase" rows={6} onChange={(e) => setSentence(e.target.value)} />
-                            <Textarea label="Diagram Code" placeholder="Diagram Code" rows={10} onChange={(e) => setCode(e.target.value)} />
+                            <Input type="text" label="Title" placeholder="Title" minLength="5" required="required" onChange={(e) => setTitle(e.target.value)} />
+                            <Textarea label="Sentence or Phrase" placeholder="Sentence or Phrase" required="required" rows={6} onChange={(e) => setSentence(e.target.value)} />
+                            <Textarea label="Diagram Code" placeholder="Diagram Code" rows={10} required="required" onChange={(e) => setCode(e.target.value)} />
                             <Textarea label="Author's Commentary" placeholder="Author's Commentary" rows={6} onChange={(e) => setCommentary(e.target.value)} />
 
                             {(props.auth.isEditor === 'y') ? <Textarea label="Editor's Commentary" placeholder="Editor's Commentary" rows={6} rows={6} onChange={(e) => setEditorCommentary(e.target.value)} /> : ''}
