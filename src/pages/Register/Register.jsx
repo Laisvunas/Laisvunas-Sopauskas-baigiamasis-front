@@ -16,6 +16,8 @@ const Register = () => {
     const createUser = (username, email, password) => {
   
       const url = `${backendUrlBase}/auth/register`;
+      
+      try {
         fetch(url, {
           method: 'POST',
           headers: {
@@ -27,23 +29,30 @@ const Register = () => {
             password: password,
           }),
         }).then((res) => res.json())
-          .then((data) => {
-            // console.log(data);
-            if (typeof data.msg !== 'undefined') {
-              const inputs = document.querySelectorAll('#register_form input');
-              for (let i = 0; i < inputs.length; i += 1) {
-                inputs[i].value = '';
-              }
-              document.querySelector('.notification.is-success > div.notification-body').innerText = data.msg;
-              document.querySelector('.notification.is-success').classList.remove('is-hidden');
-              document.querySelector('.notification.is-success').style.display = 'block';
-            } else if (typeof data.error !== 'undefined') {
-              // console.log(data.error);
-              document.querySelector('.notification.is-danger > div.notification-body').innerText = 'Some error happened. Try again later.';
-              document.querySelector('.notification.is-danger').classList.remove('is-hidden');
-              document.querySelector('.notification.is-danger').style.display = 'block';
+        .then((data) => {
+          // console.log(data);
+          if (typeof data.msg !== 'undefined') {
+            const inputs = document.querySelectorAll('#register_form input');
+            for (let i = 0; i < inputs.length; i += 1) {
+              inputs[i].value = '';
             }
-          });
+            document.querySelector('.notification.is-success > div.notification-body').innerText = data.msg;
+            document.querySelector('.notification.is-success').classList.remove('is-hidden');
+            document.querySelector('.notification.is-success').style.display = 'block';
+          } else if (typeof data.error !== 'undefined') {
+            // console.log(data.error);
+            document.querySelector('.notification.is-danger > div.notification-body').innerText = 'Some error happened. Try again later.';
+            document.querySelector('.notification.is-danger').classList.remove('is-hidden');
+            document.querySelector('.notification.is-danger').style.display = 'block';
+          }
+        });
+      }
+      catch (e) {
+        document.querySelector('.notification.is-danger > div.notification-body').innerText = 'Some error happened. Try again later.';
+        document.querySelector('.notification.is-danger').classList.remove('is-hidden');
+        document.querySelector('.notification.is-danger').style.display = 'block';
+      }
+      
     };
   
     return (
