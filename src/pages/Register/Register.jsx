@@ -62,9 +62,9 @@ const Register = () => {
               createUser(username, email, password);
             }}
           >
-            <Input type="text" label="Name" placeholder="Name" minLength="2" onChange={(e) => setUsername(e.target.value)} />
-            <Input type="email" label="Email" placeholder="name@gmail.com" onChange={(e) => setEmail(e.target.value)} />
-            <Input type="password" label="Password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+            <Input type="text" label="Name" placeholder="Name" minLength="2" required="required" onChange={(e) => setUsername(e.target.value)} />
+            <Input type="email" label="Email" placeholder="name@gmail.com" required="required" onChange={(e) => setEmail(e.target.value)} />
+            <Input type="password" label="Password" placeholder="Password" required="required" onChange={(e) => setPassword(e.target.value)} />
             <Button variant='is-primary' type='submit'>Submit</Button>
           </form>
       </Container>
