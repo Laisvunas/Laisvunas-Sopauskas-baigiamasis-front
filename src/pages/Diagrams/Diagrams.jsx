@@ -7,6 +7,10 @@ const Diagrams = (props) => {
     const [list, setList] = useState([]);
     const [list2, setList2] = useState([]);
 
+    useEffect(() => {
+        document.title = `My diagrams | ${siteName}`
+    }, []);
+
     const getList =  (req, res) => {
         
         const url = `${backendUrlBase}/diagrams/all`;
