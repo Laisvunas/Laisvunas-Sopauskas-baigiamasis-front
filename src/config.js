@@ -3,5 +3,5 @@ module.exports = {
   
     backendUrlBase: 'http://localhost:8080',
 
-    siteName: 'RKM Diagrammer',
+    siteName: 'MRK Diagrammer',
   };
