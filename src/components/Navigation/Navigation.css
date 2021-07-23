@@ -99,4 +99,9 @@
   .aside .main .item.active .name, .aside .main .item.active .name:hover {
     color: #fff;
   }
-  
+
+  #view-page-aside {
+    max-width: 250px;
+    float: left;
+    clear: left;
+  }

@@ -41,6 +41,7 @@ const Publish = (props) => {
         try {
             fetch(url, {
                 method: 'POST',
+                mode: 'cors',
                 headers: {
                   'Content-Type': 'application/json',
                   authorization: `Bearer ${token}`,
@@ -85,6 +86,7 @@ const Publish = (props) => {
         try {
             fetch(url, {
                 method: 'POST',
+                mode: 'cors',
                 headers: {
                   'Content-Type': 'application/json',
                   authorization: `Bearer ${token}`,
@@ -132,11 +134,13 @@ const Publish = (props) => {
         try {
             fetch(url, {
                 method: 'POST',
+                mode: 'cors',
                 headers: {
                   'Content-Type': 'application/json',
                   authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
+                    id: id,
                     author_id: props.auth.author_id,
                     editor: props.auth.isEditor,
                 }),
@@ -177,7 +181,7 @@ const Publish = (props) => {
                                 publishDiagram();
                             }}
                         >
-                            <p>Author: {author ? author : props.auth.username} {id || diagramId ? <span className="is-pulled-right"><Button variant='is-danger' onClick={async (e) => {e.preventDefault(); deleteDiagram(id)}}>Delete Diagram</Button> <a className="button is-primary" href="/publish">New Diagram</a></span> : ""}</p>
+                            <p>{author ? `Author: ${author}` : (id && !title? <span>&nbsp;</span> : `Author: ${props.auth.username}`)} {id || diagramId ? <span className="is-pulled-right"><Button variant='is-danger' onClick={async (e) => {e.preventDefault(); deleteDiagram(id ? id : diagramId)}}>Delete Diagram</Button> <a className="button is-primary" href="/publish">New Diagram</a></span> : ""}</p>
                             <Input type="text" label="Title" placeholder="Title" minLength="5" required="required" value={title} onChange={(e) => setTitle(e.target.value)} />
                             <Textarea label="Sentence or Phrase" placeholder="Sentence or Phrase" required="required" value={sentence} rows={6} onChange={(e) => setSentence(e.target.value)} />
                             <Textarea label="Diagram Code" placeholder="Diagram Code" rows={10} required="required" value={code} onChange={(e) => setCode(e.target.value)} />
@@ -185,7 +189,7 @@ const Publish = (props) => {
 
                             {(props.auth.isEditor === 'y') ? <Textarea label="Editor's Commentary" placeholder="Editor's Commentary" rows={6} value={editorCommentary} onChange={(e) => setEditorCommentary(e.target.value)} /> : ''}
                             
-                            <Button variant='is-primary' type='submit'>Submit</Button>
+                            <Button variant='is-primary' type='submit'>Submit</Button> {title && (id || diagramId) ? <a href={`/view/${id ? id : (diagramId ? diagramId : '')}`} className="button is-primary" target="_blank">View</a> : ""}
                         </form>  
                     </div>
                 </div>

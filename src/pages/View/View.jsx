@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import { Container, Navigation, Button, Notification } from "../../components";
+import DOMPurify from 'dompurify';
 
 const { backendUrlBase, siteName } = require('../../config');
 const { successMsg, errorMsg } = require('../../utils/showMsg');
@@ -50,6 +51,10 @@ const View = (props) => {
                 console.log("data: " + JSON.stringify(data));
                 if (typeof data.error !== 'undefined') {
                     errorMsg(data.error);
+                    // const blocks = document.querySelectorAll(".block");
+                    // for (let i = 0; i < blocks.length; i++) {
+                    //     blocks[i].style.display = "none"; 
+                    // }
                 }
                 else if (typeof data.data !== 'undefined' && data.data.length === 1) {
                     setTitle(data.data[0].title);
@@ -69,47 +74,69 @@ const View = (props) => {
     };
 
     return (
-        <Container variant="wide">
-            <div className="columns">
-                <aside className="column is-3 aside hero is-fullheight">
-                    <Navigation activeUrl="/diagrams" userName={props.auth.username}></Navigation>
-                </aside>
-                <div className="column is-9 messages hero is-fullheight">
-                    <h1 className="title is-1">{siteName}</h1>
-                    <h2 id="page-title" className="title is-2">{title}</h2>
+
+        <div className="columns">
+            <aside id="view-page-aside" className="column aside hero is-fullheight">
+                <Navigation activeUrl="/diagrams" userName={props.auth.username}></Navigation>
+            </aside>
+            <div className="column messages hero is-fullheight">
+                <h1 className="title is-1">{siteName}</h1>
+                <h2 id="page-title" className="title is-2">{title}</h2>
+
+                <Container variant="text">
                     <Notification variant='is-danger is-hidden' />
-                    <div className="block">
-                        <p>Author: {author}</p>
-                    </div>
-                    <div className="block">
-                        <p>{sentence}</p>
-                    </div>
-                    <div className="block">
-                        {code}
-                    </div>
-                    <h3 className="title is-5">Commentary:</h3>
-                    <div className="block">
-                        <p>{commentary}</p>
-                    </div>
-                    
-                    {editorCommentary ?
-                        <>
-                            <h3 className="title is-5">Editor's Commentary:</h3>
-                            <div className="block">
-                                <p>{editorCommentary}</p>
-                            </div>
-                        </>
-                    : ""
-                    }
-                    {props.auth.isEditor === 'y' || diagramCreatorId === props.auth.author_id ?
-                    <div className="block">
-                        <a className='button is-primary' href={`/publish/${id}`}>Edit</a>
-                    </div>
-                    : ""
-                    }
+                </Container>
+                
+                {author ?
+                <div className="block">
+                    <p>Author: {author}</p>
                 </div>
+                : ""
+                }
+                
+                {sentence ?
+                <div className="block greek-text">
+                    <Container variant="text">
+                        {sentence}
+                    </Container>
+                </div>
+                : ""
+                }
+                
+                <div className="block greek-text" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(code)}}>
+
+                </div>
+                
+                {commentary ?
+                <div className="block">
+                    <Container variant="text">
+                        <p>{commentary}</p>
+                    </Container>
+                </div>
+                : ""
+                }
+                
+                
+                {editorCommentary ?
+                    <>
+                        <h3 className="title is-6">Editor's Commentary:</h3>
+                        <div className="block">
+                            <Container variant="text">
+                                <p>{editorCommentary}</p>
+                            </Container>
+                        </div>
+                    </>
+                : ""
+                }
+                {author && (props.auth.isEditor === 'y' || diagramCreatorId === props.auth.author_id) ?
+                <div className="block">
+                    <a className='button is-primary' href={`/publish/${id}`}>Edit</a>
+                </div>
+                : ""
+                }
             </div>
-        </Container>
+        </div>
+
     );
 };
 
