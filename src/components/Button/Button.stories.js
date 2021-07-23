@@ -8,4 +8,4 @@ export default {
 
 export const Primary = () => <Button variant='is-primary'>Primary</Button>;
 
-export const Outline = () => <Button>Outline</Button>;
+export const Danger = () => <Button variant='is-danger'>Danger</Button>;
