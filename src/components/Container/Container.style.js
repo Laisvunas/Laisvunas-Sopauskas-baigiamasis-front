@@ -13,3 +13,7 @@ margin: 0 auto;
 export const PaddedDiv = styled.div`
 margin: 1.5rem 0 1.5rem 0;
 `;
+
+export const TextDiv = styled.div`
+max-width: 40rem;
+`;

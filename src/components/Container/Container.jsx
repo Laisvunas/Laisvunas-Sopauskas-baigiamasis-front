@@ -16,6 +16,11 @@ function Container(props) {
             <S.PaddedDiv>{children}</S.PaddedDiv>
         );
     }
+    else if (variant === "text") {
+        return (
+            <S.TextDiv>{children}</S.TextDiv>
+        );
+    }
 
     return (
         <S.Div>{children}</S.Div>
