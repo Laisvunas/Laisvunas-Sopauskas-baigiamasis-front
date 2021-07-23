@@ -9,7 +9,7 @@ function Navigation(props) {
     const links = [
         {
             url: "/diagrams",
-            label: "My Diagrams",
+            label: "Diagrams",
         },
         {
             url: "/generate",
