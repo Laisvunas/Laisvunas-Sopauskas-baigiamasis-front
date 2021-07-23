@@ -5,3 +5,4 @@ export { default as Notification } from "./Notification/Notification";
 export { default as ProgressBar } from "./ProgressBar/ProgressBar";
 export { default as Navigation } from "./Navigation/Navigation";
 export { default as Textarea } from "./Textarea/Textarea";
+export { default as A } from "./Anchor/Anchor";
