@@ -3,23 +3,28 @@ import { useParams } from 'react-router-dom';
 import { Container, Navigation, Input, Textarea, Button, Notification } from "../../components";
 
 const { backendUrlBase, siteName } = require('../../config');
+const { successMsg, errorMsg } = require('../../utils/showMsg');
 
 const Publish = (props) => {
     const [diagramId, setId] = useState();
-    const [title, setTitle] = useState();
+    const [title, setTitle] = useState("");
     const [sentence, setSentence] = useState();
     const [code, setCode] = useState();
     const [commentary, setCommentary] = useState();
     const [editorCommentary, setEditorCommentary] = useState();
+    const [author, setAuthor] = useState();
 
     const { id } = useParams();
 
     useEffect(() => {
-        document.title = `Publish | ${siteName}`;
-        
-        if (typeof id !== 'undefined') {
+        console.log("1 id: " + id);
+        if (typeof id === 'undefined') {
+            document.title = `Publish | ${siteName}`;
+        }
+        else {
             setId(id);
-            console.log("1 id: " + id);
+            document.title = `Edit | ${siteName}`;
+            getDiagramData(id);
         }
            
     }, []);
@@ -53,11 +58,8 @@ const Publish = (props) => {
             })
             .then((res) => res.json())
             .then((data) => {
-                console.log("data: " + JSON.stringify(data));
                 if (typeof data.msg !== 'undefined') {
-                    document.querySelector('.notification.is-success > div.notification-body').innerText = data.msg;
-                    document.querySelector('.notification.is-success').classList.remove('is-hidden');
-                    document.querySelector('.notification.is-success').style.display = 'block';
+                    successMsg(data.msg);
                     if (typeof data.data !== 'undefined' && typeof data.data.insertId !== 'undefined' && data.data.insertId !== 0) {
                         setId(data.data.insertId);
                         window.history.replaceState(null, null, `/publish/${data.data.insertId}`);
@@ -66,18 +68,93 @@ const Publish = (props) => {
                     }
                 }
                 else if (typeof data.error !== 'undefined') {
-                    // console.log(data.error);
-                    document.querySelector('.notification.is-danger > div.notification-body').innerText = 'Some error happened. Try again later.';
-                    document.querySelector('.notification.is-danger').classList.remove('is-hidden');
-                    document.querySelector('.notification.is-danger').style.display = 'block';
+                    errorMsg('Some error happened. Try again later.');
                 }
 
             });
         }
         catch (e) {
-            document.querySelector('.notification.is-danger > div.notification-body').innerText = 'Some error happened. Try again later.';
-            document.querySelector('.notification.is-danger').classList.remove('is-hidden');
-            document.querySelector('.notification.is-danger').style.display = 'block';
+            errorMsg('Some error happened. Try again later.');
+        }
+    };
+
+    const getDiagramData = (id) => {
+        const url = `${backendUrlBase}/diagrams/publish/${id}`;
+        const token = localStorage.getItem("token");
+
+        try {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    author_id: props.auth.author_id,
+                }),
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("data: " + JSON.stringify(data));
+                if (typeof data.error !== 'undefined') {
+                    errorMsg(data.error);
+                    const inputs = document.querySelectorAll('#publish_form input, #publish_form textarea, #publish_form button');
+                    for (let i = 0; i < inputs.length; i += 1) {
+                        inputs[i].disabled = true;
+                    }
+                }
+                else if (typeof data.data !== 'undefined' && data.data.length === 1) {
+                    setTitle(data.data[0].title);
+                    setSentence(data.data[0].sentence);
+                    setCode(data.data[0].code);
+                    setCommentary(data.data[0].commentary);
+                    setEditorCommentary(data.data[0].editors_commentary === null ? "" : data.data[0].editors_commentary);
+                    setAuthor(data.data[0].username);
+                }
+                
+            });
+        }
+        catch (e) {
+            errorMsg('Some error happened. Try again later.');
+        }
+    };
+
+    const deleteDiagram = (id) => {
+        
+        const retVal = window.confirm("Do you really want to delete this diagram?");
+        if( retVal == false ) {
+            return;
+        }
+        
+        const url = `${backendUrlBase}/diagrams/delete/${id}`;
+        const token = localStorage.getItem("token");
+
+        try {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    author_id: props.auth.author_id,
+                    editor: props.auth.isEditor,
+                }),
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("data: " + JSON.stringify(data));
+                if (typeof data.msg !== 'undefined') {
+                    alert(data.msg);
+                    window.location.href = "/publish";
+                }
+                else if (typeof data.error !== 'undefined') {
+                    errorMsg(data.error);
+                }
+            });
+        }
+        catch (e) {
+            errorMsg('Some error happened. Try again later.');
         }
     };
 
@@ -89,23 +166,24 @@ const Publish = (props) => {
                 </aside>
                 <div className="column is-9 messages hero is-fullheight">
                     <h1 className="title is-1">{siteName}</h1>
-                    <h2 id="page-title" className="title is-2">Publish Diagram</h2>
+                    <h2 id="page-title" className="title is-2">{id ? 'Edit Diagram' : 'Publish Diagram'}</h2>
                     <Notification variant='is-success is-hidden' />
                     <Notification variant='is-danger is-hidden' />
                     <div id="publish-diagram">
                          <form
-                            id="register_form"
+                            id="publish_form"
                             onSubmit={async (e) => {
                                 e.preventDefault();
                                 publishDiagram();
                             }}
                         >
-                            <Input type="text" label="Title" placeholder="Title" minLength="5" required="required" onChange={(e) => setTitle(e.target.value)} />
-                            <Textarea label="Sentence or Phrase" placeholder="Sentence or Phrase" required="required" rows={6} onChange={(e) => setSentence(e.target.value)} />
-                            <Textarea label="Diagram Code" placeholder="Diagram Code" rows={10} required="required" onChange={(e) => setCode(e.target.value)} />
-                            <Textarea label="Author's Commentary" placeholder="Author's Commentary" rows={6} onChange={(e) => setCommentary(e.target.value)} />
+                            <p>Author: {author ? author : props.auth.username} {id || diagramId ? <span className="is-pulled-right"><Button variant='is-danger' onClick={async (e) => {e.preventDefault(); deleteDiagram(id)}}>Delete Diagram</Button> <a className="button is-primary" href="/publish">New Diagram</a></span> : ""}</p>
+                            <Input type="text" label="Title" placeholder="Title" minLength="5" required="required" value={title} onChange={(e) => setTitle(e.target.value)} />
+                            <Textarea label="Sentence or Phrase" placeholder="Sentence or Phrase" required="required" value={sentence} rows={6} onChange={(e) => setSentence(e.target.value)} />
+                            <Textarea label="Diagram Code" placeholder="Diagram Code" rows={10} required="required" value={code} onChange={(e) => setCode(e.target.value)} />
+                            <Textarea label="Author's Commentary" placeholder="Author's Commentary" rows={6} value={commentary} onChange={(e) => setCommentary(e.target.value)} />
 
-                            {(props.auth.isEditor === 'y') ? <Textarea label="Editor's Commentary" placeholder="Editor's Commentary" rows={6} rows={6} onChange={(e) => setEditorCommentary(e.target.value)} /> : ''}
+                            {(props.auth.isEditor === 'y') ? <Textarea label="Editor's Commentary" placeholder="Editor's Commentary" rows={6} value={editorCommentary} onChange={(e) => setEditorCommentary(e.target.value)} /> : ''}
                             
                             <Button variant='is-primary' type='submit'>Submit</Button>
                         </form>  

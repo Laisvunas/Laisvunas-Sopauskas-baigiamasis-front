@@ -3,6 +3,7 @@ import { Container, Input, Button, Notification } from "../../components";
 import { BrowserRouter as Router, Link, Redirect } from "react-router-dom";
 
 const { backendUrlBase, siteName } = require('../../config');
+const { successMsg, errorMsg } = require('../../utils/showMsg');
 
 const Register = () => {
     const [username, setUsername] = useState();
@@ -30,27 +31,19 @@ const Register = () => {
           }),
         }).then((res) => res.json())
         .then((data) => {
-          // console.log(data);
           if (typeof data.msg !== 'undefined') {
             const inputs = document.querySelectorAll('#register_form input');
             for (let i = 0; i < inputs.length; i += 1) {
               inputs[i].value = '';
             }
-            document.querySelector('.notification.is-success > div.notification-body').innerText = data.msg;
-            document.querySelector('.notification.is-success').classList.remove('is-hidden');
-            document.querySelector('.notification.is-success').style.display = 'block';
+            successMsg(data.msg);
           } else if (typeof data.error !== 'undefined') {
-            // console.log(data.error);
-            document.querySelector('.notification.is-danger > div.notification-body').innerText = 'Some error happened. Try again later.';
-            document.querySelector('.notification.is-danger').classList.remove('is-hidden');
-            document.querySelector('.notification.is-danger').style.display = 'block';
+            errorMsg('Some error happened. Try again later.');
           }
         });
       }
       catch (e) {
-        document.querySelector('.notification.is-danger > div.notification-body').innerText = 'Some error happened. Try again later.';
-        document.querySelector('.notification.is-danger').classList.remove('is-hidden');
-        document.querySelector('.notification.is-danger').style.display = 'block';
+        errorMsg('Some error happened. Try again later.');
       }
       
     };

@@ -4,6 +4,7 @@ import { Container, Input, Button, Notification } from "../../components";
 import { BrowserRouter as Router, Link, Redirect } from "react-router-dom";
 
 const { backendUrlBase, siteName } = require('../../config');
+const { errorMsg } = require('../../utils/showMsg');
 
 const Login = () => {
   const [email, setEmail] = useState();
@@ -40,15 +41,11 @@ const Login = () => {
             }
             window.location.href = "/diagrams";
           } else if (typeof data.error !== 'undefined') {
-            document.querySelector('.notification.is-danger > div.notification-body').innerText = data.error;
-            document.querySelector('.notification.is-danger').classList.remove('is-hidden');
-            document.querySelector('.notification.is-danger').style.display = 'block';
+            errorMsg(data.error);
           }
         });
     } catch (e) {
-      document.querySelector('.notification.is-danger > div.notification-body').innerText = 'Some error happened. Try again later.';
-      document.querySelector('.notification.is-danger').classList.remove('is-hidden');
-      document.querySelector('.notification.is-danger').style.display = 'block';
+      errorMsg('Some error happened. Try again later.');
     }
     
 
