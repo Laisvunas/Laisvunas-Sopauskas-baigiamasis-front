@@ -75,8 +75,8 @@ const View = (props) => {
 
     return (
 
-        <div className="columns">
-            <aside id="view-page-aside" className="column aside hero is-fullheight">
+        <div id="view" className="columns">
+            <aside id="view-page-aside" className="column aside hero is-2 is-fullheight">
                 <Navigation activeUrl="/diagrams" userName={props.auth.username}></Navigation>
             </aside>
             <div className="column messages hero is-fullheight">
