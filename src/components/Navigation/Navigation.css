@@ -30,10 +30,15 @@
   .nav.menu .nav-item.is-active .icon-btn .fa {
     color: #2EB398;
   }
+  .columns {
+    margin-top: 0;
+    width: 100%;
+  }
   .aside {
     display:block;
     background-color: #F9F9F9;
     border-right: 1px solid #DEDEDE;
+    border-left: 1px solid #DEDEDE;
   }
   .messages {
     display:block;
@@ -41,10 +46,8 @@
     border-right: 1px solid #DEDEDE;
     padding: 40px 20px;
   }
-  .message {
-    display:block;
-    background-color: #fff;
-    padding: 40px 20px;
+  #view .messages {
+    border-right: 0;
   }
   .aside .compose {
     height: 95px;
