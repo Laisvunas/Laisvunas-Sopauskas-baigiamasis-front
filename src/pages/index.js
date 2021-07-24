@@ -4,3 +4,4 @@ export { default as Register } from "./Register/Register";
 export { default as Diagrams } from "./Diagrams/Diagrams";
 export { default as Publish } from "./Publish/Publish";
 export { default as View } from "./View/View";
+export { default as Test } from "./Test/Test";

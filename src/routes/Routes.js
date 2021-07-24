@@ -2,12 +2,13 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute";
 
-import { Home, Login, Register, Diagrams, Publish, View } from "../pages";
+import { Home, Login, Register, Diagrams, Publish, View, Test } from "../pages";
 
 const Routes = () => (
   <Router>
     <Switch>
       <Route exact path="/" component={Home} />
+      <Route exact path="/test" component={Test} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/register" component={Register} />
       <PrivateRoute exact path="/diagrams" component={Diagrams} />
