@@ -164,7 +164,7 @@ const Publish = (props) => {
 
     return (
         <Container variant="wide">
-            <div className="columns">
+            <div id="view" className="columns">
                 <aside className="column is-3 aside hero is-fullheight">
                     <Navigation activeUrl="/publish" userName={props.auth.username}></Navigation>
                 </aside>
