@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import Container from '../components/Container/Container';
 import ProgressBar from '../components/ProgressBar/ProgressBar';
 
