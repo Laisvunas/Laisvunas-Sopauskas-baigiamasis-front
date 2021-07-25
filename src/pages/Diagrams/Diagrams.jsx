@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Navigation, Notification, A } from "../../components";
 
 const { backendUrlBase, siteName } = require('../../config');
@@ -7,48 +7,6 @@ const { errorMsg } = require('../../utils/showMsg');
 const Diagrams = (props) => {
     const [list, setList] = useState([]);
     const [list2, setList2] = useState([]);
-
-    useEffect(() => {
-        document.title = `My diagrams | ${siteName}`
-    }, []);
-
-    const getList =  async (req, res) => {
-        
-        const url = `${backendUrlBase}/diagrams/all`;
-        
-        try {
-            await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    author_id: props.auth.author_id,
-                    isEditor: props.auth.isEditor,
-                }),
-            }).then((res) => res.json())
-              .then((res) => {
-
-                if (typeof res.error !== 'undefined') {
-                    errorMsg('Some error happened. Try again later.');
-                    return;
-                }
-                else if (typeof res.loggedUserDiagrams !== 'undefined') {
-                    setList(res.loggedUserDiagrams);  
-                }
-
-                if (typeof res.otherUsersDiagrams !== 'undefined' && res.otherUsersDiagrams.length > 0) {
-                    const otherUsersDiagrams = prepareOtherUsersDiagrams(res.otherUsersDiagrams);
-                    setList2(otherUsersDiagrams);
-                }
-                
-            });
-        } catch (e) {
-            console.log(e);
-            errorMsg('Some error happened. Try again later.');
-        }
-        
-    };
 
     const prepareOtherUsersDiagrams = (diagramsArr) => {
         const diagramsArr2 = JSON.parse(JSON.stringify(diagramsArr));
@@ -61,8 +19,46 @@ const Diagrams = (props) => {
     };
       
     useEffect(() => {
+        document.title = `My diagrams | ${siteName}`;
+        const getList =  async (req, res) => {
+        
+            const url = `${backendUrlBase}/diagrams/all`;
+            
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        author_id: props.auth.author_id,
+                        isEditor: props.auth.isEditor,
+                    }),
+                }).then((res) => res.json())
+                  .then((res) => {
+    
+                    if (typeof res.error !== 'undefined') {
+                        errorMsg('Some error happened. Try again later.');
+                        return;
+                    }
+                    else if (typeof res.loggedUserDiagrams !== 'undefined') {
+                        setList(res.loggedUserDiagrams);  
+                    }
+    
+                    if (typeof res.otherUsersDiagrams !== 'undefined' && res.otherUsersDiagrams.length > 0) {
+                        const otherUsersDiagrams = prepareOtherUsersDiagrams(res.otherUsersDiagrams);
+                        setList2(otherUsersDiagrams);
+                    }
+                    
+                });
+            } catch (e) {
+                console.log(e);
+                errorMsg('Some error happened. Try again later.');
+            }
+            
+        };
         getList();
-    }, []);
+    }, [props.auth.author_id, props.auth.isEditor]);
     
     return (
         <Container variant="wide">

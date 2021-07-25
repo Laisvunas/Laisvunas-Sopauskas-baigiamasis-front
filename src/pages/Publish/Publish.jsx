@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import { Container, Navigation, Input, Textarea, Button, Notification } from "../../components";
 
@@ -17,7 +17,49 @@ const Publish = (props) => {
     const { id } = useParams();
 
     useEffect(() => {
-        console.log("1 id: " + id);
+
+        const getDiagramData = (id) => {
+            const url = `${backendUrlBase}/diagrams/publish/${id}`;
+            const token = localStorage.getItem("token");
+    
+            try {
+                fetch(url, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        author_id: props.auth.author_id,
+                    }),
+                })
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log("data: " + JSON.stringify(data));
+                    if (typeof data.error !== 'undefined') {
+                        errorMsg(data.error);
+                        const inputs = document.querySelectorAll('#publish_form input, #publish_form textarea, #publish_form button');
+                        for (let i = 0; i < inputs.length; i += 1) {
+                            inputs[i].disabled = true;
+                        }
+                    }
+                    else if (typeof data.data !== 'undefined' && data.data.length === 1) {
+                        setTitle(data.data[0].title);
+                        setSentence(data.data[0].sentence);
+                        setCode(data.data[0].code);
+                        setCommentary(data.data[0].commentary);
+                        setEditorCommentary(data.data[0].editors_commentary === null ? "" : data.data[0].editors_commentary);
+                        setAuthor(data.data[0].username);
+                    }
+                    
+                });
+            }
+            catch (e) {
+                errorMsg('Some error happened. Try again later.');
+            }
+        };
+
         if (typeof id === 'undefined') {
             document.title = `Publish | ${siteName}`;
         }
@@ -27,9 +69,7 @@ const Publish = (props) => {
             getDiagramData(id);
         }
            
-    }, []);
-
-    console.log("props.auth: " + JSON.stringify(props.auth));
+    }, [id, props.auth.author_id]);
 
     const publishDiagram = () => {
         const url = `${backendUrlBase}/diagrams/publish`;
@@ -79,52 +119,12 @@ const Publish = (props) => {
         }
     };
 
-    const getDiagramData = (id) => {
-        const url = `${backendUrlBase}/diagrams/publish/${id}`;
-        const token = localStorage.getItem("token");
-
-        try {
-            fetch(url, {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                  'Content-Type': 'application/json',
-                  authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    author_id: props.auth.author_id,
-                }),
-            })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log("data: " + JSON.stringify(data));
-                if (typeof data.error !== 'undefined') {
-                    errorMsg(data.error);
-                    const inputs = document.querySelectorAll('#publish_form input, #publish_form textarea, #publish_form button');
-                    for (let i = 0; i < inputs.length; i += 1) {
-                        inputs[i].disabled = true;
-                    }
-                }
-                else if (typeof data.data !== 'undefined' && data.data.length === 1) {
-                    setTitle(data.data[0].title);
-                    setSentence(data.data[0].sentence);
-                    setCode(data.data[0].code);
-                    setCommentary(data.data[0].commentary);
-                    setEditorCommentary(data.data[0].editors_commentary === null ? "" : data.data[0].editors_commentary);
-                    setAuthor(data.data[0].username);
-                }
-                
-            });
-        }
-        catch (e) {
-            errorMsg('Some error happened. Try again later.');
-        }
-    };
+    
 
     const deleteDiagram = (id) => {
         
         const retVal = window.confirm("Do you really want to delete this diagram?");
-        if( retVal == false ) {
+        if( retVal === false ) {
             return;
         }
         

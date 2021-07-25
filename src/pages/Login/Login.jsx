@@ -1,7 +1,6 @@
   
-import React, { useState, useEffect, useContext } from "react";
-import { Container, Input, Button, Notification } from "../../components";
-import { BrowserRouter as Router, Link, Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Container, Input, Button, Notification, A } from "../../components";
 
 const { backendUrlBase, siteName } = require('../../config');
 const { errorMsg } = require('../../utils/showMsg');
@@ -56,7 +55,7 @@ const Login = () => {
           <h1 className="title is-1">{siteName}</h1>
           <h2 className="title is-2">Login</h2>
           <div className="block">
-            <p>Not a member? <Link to="/register">Register</Link></p>
+            <p>Not a member? <A href="/register">Register</A></p>
           </div>
           <Notification variant='is-success is-hidden' />
           <Notification variant='is-danger is-hidden' />

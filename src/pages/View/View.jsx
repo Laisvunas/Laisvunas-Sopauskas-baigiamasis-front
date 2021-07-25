@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
-import { Container, Navigation, Button, Notification } from "../../components";
+import { Container, Navigation,  Notification } from "../../components";
 import DOMPurify from 'dompurify';
 
 const { backendUrlBase, siteName } = require('../../config');
-const { successMsg, errorMsg } = require('../../utils/showMsg');
+const { errorMsg } = require('../../utils/showMsg');
 
 const View = (props) => {
-    const [diagramId, setId] = useState();
     const [title, setTitle] = useState("");
     const [sentence, setSentence] = useState();
     const [code, setCode] = useState();
@@ -20,6 +19,44 @@ const View = (props) => {
 
     useEffect(() => {
         
+        const loadDiagram = (props) => {
+            const url = `${backendUrlBase}/diagrams/view`;
+            const token = localStorage.getItem("token");
+    
+            try {
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        author_id: props.auth.author_id,
+                        id: id,
+                    }),
+                })
+                .then((res) => res.json())
+                .then((data) =>  {
+                    if (typeof data.error !== 'undefined') {
+                        errorMsg(data.error);
+                    }
+                    else if (typeof data.data !== 'undefined' && data.data.length === 1) {
+                        setTitle(data.data[0].title);
+                        setSentence(data.data[0].sentence);
+                        setCode(data.data[0].code);
+                        setCommentary(data.data[0].commentary);
+                        setEditorCommentary(data.data[0].editors_commentary === null ? "" : data.data[0].editors_commentary);
+                        setAuthor(data.data[0].username);
+                        setDiagramCreatorId(data.data[0].user_id);
+                    }
+                });
+            }
+            catch (e) {
+                errorMsg('Some error happened. Try again later.');
+            }
+    
+        };
+
         if (typeof id === 'undefined') {
             window.location.href = "/diagrams";
         }
@@ -28,50 +65,9 @@ const View = (props) => {
             loadDiagram(props);
         }
              
-    }, []);
+    }, [id, props]);
 
-    const loadDiagram = (props) => {
-        const url = `${backendUrlBase}/diagrams/view`;
-        const token = localStorage.getItem("token");
-
-        try {
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    author_id: props.auth.author_id,
-                    id: id,
-                }),
-            })
-            .then((res) => res.json())
-            .then((data) =>  {
-                console.log("data: " + JSON.stringify(data));
-                if (typeof data.error !== 'undefined') {
-                    errorMsg(data.error);
-                    // const blocks = document.querySelectorAll(".block");
-                    // for (let i = 0; i < blocks.length; i++) {
-                    //     blocks[i].style.display = "none"; 
-                    // }
-                }
-                else if (typeof data.data !== 'undefined' && data.data.length === 1) {
-                    setTitle(data.data[0].title);
-                    setSentence(data.data[0].sentence);
-                    setCode(data.data[0].code);
-                    setCommentary(data.data[0].commentary);
-                    setEditorCommentary(data.data[0].editors_commentary === null ? "" : data.data[0].editors_commentary);
-                    setAuthor(data.data[0].username);
-                    setDiagramCreatorId(data.data[0].user_id);
-                }
-            });
-        }
-        catch (e) {
-            errorMsg('Some error happened. Try again later.');
-        }
-
-    };
+    
 
     return (
 
