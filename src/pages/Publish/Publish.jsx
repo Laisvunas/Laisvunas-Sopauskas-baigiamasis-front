@@ -9,6 +9,7 @@ const Publish = (props) => {
     const [diagramId, setId] = useState();
     const [title, setTitle] = useState("");
     const [sentence, setSentence] = useState();
+    const [json, setJSON] = useState();
     const [code, setCode] = useState();
     const [commentary, setCommentary] = useState();
     const [editorCommentary, setEditorCommentary] = useState();
@@ -36,7 +37,6 @@ const Publish = (props) => {
                 })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log("data: " + JSON.stringify(data));
                     if (typeof data.error !== 'undefined') {
                         errorMsg(data.error);
                         const inputs = document.querySelectorAll('#publish_form input, #publish_form textarea, #publish_form button');
@@ -47,6 +47,7 @@ const Publish = (props) => {
                     else if (typeof data.data !== 'undefined' && data.data.length === 1) {
                         setTitle(data.data[0].title);
                         setSentence(data.data[0].sentence);
+                        setJSON(data.data[0].json);
                         setCode(data.data[0].code);
                         setCommentary(data.data[0].commentary);
                         setEditorCommentary(data.data[0].editors_commentary === null ? "" : data.data[0].editors_commentary);
@@ -75,9 +76,6 @@ const Publish = (props) => {
         const url = `${backendUrlBase}/diagrams/publish`;
         const token = localStorage.getItem("token");
 
-        console.log("props: " + JSON.stringify(props));
-        console.log("2 id: " + id);
-
         try {
             fetch(url, {
                 method: 'POST',
@@ -91,6 +89,7 @@ const Publish = (props) => {
                     author_id: props.auth.author_id,
                     title: title,
                     sentence: sentence,
+                    json: json,
                     code: code,
                     commentary: commentary,
                     editors_commentary: editorCommentary,
@@ -147,7 +146,6 @@ const Publish = (props) => {
             })
             .then((res) => res.json())
             .then((data) => {
-                console.log("data: " + JSON.stringify(data));
                 if (typeof data.msg !== 'undefined') {
                     alert(data.msg);
                     window.location.href = "/publish";
@@ -184,12 +182,13 @@ const Publish = (props) => {
                             <p>{author ? `Author: ${author}` : (id && !title? <span>&nbsp;</span> : `Author: ${props.auth.username}`)} {id || diagramId ? <span className="is-pulled-right"><Button variant='is-danger' onClick={async (e) => {e.preventDefault(); deleteDiagram(id ? id : diagramId)}}>Delete Diagram</Button> <a className="button is-primary" href="/publish">New Diagram</a></span> : ""}</p>
                             <Input type="text" label="Title" placeholder="Title" minLength="5" required="required" value={title} onChange={(e) => setTitle(e.target.value)} />
                             <Textarea label="Sentence or Phrase" placeholder="Sentence or Phrase" required="required" value={sentence} rows={6} onChange={(e) => setSentence(e.target.value)} />
+                            <Textarea label="Syntax JSON" placeholder="Syntax JSON" rows={10} required="required" value={json} onChange={(e) => setJSON(e.target.value)} />
                             <Textarea label="Diagram Code" placeholder="Diagram Code" rows={10} required="required" value={code} onChange={(e) => setCode(e.target.value)} />
                             <Textarea label="Author's Commentary" placeholder="Author's Commentary" rows={6} value={commentary} onChange={(e) => setCommentary(e.target.value)} />
 
                             {(props.auth.isEditor === 'y') ? <Textarea label="Editor's Commentary" placeholder="Editor's Commentary" rows={6} value={editorCommentary} onChange={(e) => setEditorCommentary(e.target.value)} /> : ''}
                             
-                            <Button variant='is-primary' type='submit'>Submit</Button> {title && (id || diagramId) ? <a href={`/view/${id ? id : (diagramId ? diagramId : '')}`} className="button is-primary" target="_blank">View</a> : ""}
+                            <Button variant='is-primary' type='submit'>Submit</Button> {title && (id || diagramId) ? <a href={`/view/${id ? id : (diagramId ? diagramId : '')}`} className="button is-primary" target="_blank" rel="noreferrer">View</a> : ""}
                         </form>  
                     </div>
                 </div>
