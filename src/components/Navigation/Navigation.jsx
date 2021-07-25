@@ -38,7 +38,7 @@ function Navigation(props) {
 
                     {links.map(link => (<a key={link.url} className={`item ${link.url === activeUrl ? "active" : ""}`} href={link.url}><span className="icon"><i className="fa"></i></span><span className="name">{link.label}</span></a> ))}
 
-                    <a href="#" className="item" onClick={logout}>
+                    <a href="/" className="item" onClick={logout}>
                         <span className="icon"><i className="fa"></i></span><span className="name">Logout</span>
                     </a>
                 </div>

@@ -6,4 +6,4 @@ export default {
     component: Navigation
 };
 
-export const LeftNav = () => <Navigation userName="Jonas" activeUrl="/diagrams"></Navigation>;
+export const LeftNav = () => <aside className="column is-3 aside hero is-fullheight"><Navigation userName="Jonas" activeUrl="/diagrams"></Navigation></aside>;

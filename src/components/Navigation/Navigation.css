@@ -44,10 +44,14 @@
     display:block;
     background-color: #fff;
     border-right: 1px solid #DEDEDE;
-    padding: 40px 20px;
+    padding: 40px 16px;
   }
   #view .messages {
     border-right: 0;
+  }
+  #generate .messages {
+    position: relative;
+    padding: 0;
   }
   .aside .compose {
     height: 95px;
