@@ -5,3 +5,4 @@ export { default as Diagrams } from "./Diagrams/Diagrams";
 export { default as Publish } from "./Publish/Publish";
 export { default as View } from "./View/View";
 export { default as Generate } from "./Generate/Generate";
+export { default as NotFound } from "./NotFound/NotFound";
