@@ -32,7 +32,7 @@ function Navigation(props) {
             <nav id="aside-nav">
             <div>
                 <div className="compose has-text-centered">
-                    {typeof username !== 'undefined' ? `Logged in as ${userName}.` : "" }  
+                    {userName ? `Logged in as ${userName}.` : "" }  
                 </div> 
                 <div className="main">
 
