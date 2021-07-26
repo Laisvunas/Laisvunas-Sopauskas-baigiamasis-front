@@ -76,16 +76,16 @@ const Diagrams = (props) => {
                             <div key={item.id} className="block">
                                 <h3 className="is-inline-block is-size-5 has-text-weight-semibold"><A href={`/view/${item.id}`}>{item.title}</A></h3>
                                 <p className="greek-text">{item.sentence}</p>
-                                {item.editors_commentary !== null ? <p className="has-text-danger">Editor's commentary</p>: ""}
+                                {item.editors_commentary  ? <p className="has-text-danger">Editor's commentary</p>: ""}
                                 <p><A href={`/publish/${item.id}`}>Edit</A></p>
                             </div>
                         ))}
                         {list2.map((item) => (
                             <div key={item.id} className="block">
-                                {item.username !== "" ? <h2 className="title is-2">Diagrams by {item.username}</h2>: ""}
+                                {item.username  ? <h2 className="title is-2">Diagrams by {item.username}</h2>: ""}
                                 <h3 className="is-inline-block is-size-5 has-text-weight-semibold"><A href={`/view/${item.id}`}>{item.title}</A></h3>
                                 <p className="greek-text">{item.sentence}</p>
-                                {item.editors_commentary !== null ? <p className="has-text-danger">Editor's commentary</p>: ""}
+                                {item.editors_commentary ? <p className="has-text-danger">Editor's commentary</p>: ""}
                                 {props.auth.isEditor === "y" ? <p><A href={`/publish/${item.id}`}>Edit</A></p> : ""}
                             </div>
                         ))}
